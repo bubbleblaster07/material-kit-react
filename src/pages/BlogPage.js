@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 // @mui
-import { Grid, Button, Container, Stack, Typography } from '@mui/material';
+import { Grid, Button, Container, Stack, Typography,CircularProgress,LinearProgress } from '@mui/material';
 // components
 import Iconify from '../components/iconify';
 import { BlogPostCard, BlogPostsSort, BlogPostsSearch } from '../sections/@dashboard/blog';
@@ -21,19 +21,21 @@ export default function BlogPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Blog | Minimal UI </title>
+        <title> Dashboard: Masjid | Minimal UI </title>
       </Helmet>
 
       <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
+          <LinearProgress />
+        {/* <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}> */}
+          {/* <CircularProgress /> */}
+          {/* <Typography variant="h4" gutterBottom>
             Blog
           </Typography>
           <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
             New Post
-          </Button>
-        </Stack>
-
+          </Button> */}
+        {/* </Stack> */}
+{/* 
         <Stack mb={5} direction="row" alignItems="center" justifyContent="space-between">
           <BlogPostsSearch posts={POSTS} />
           <BlogPostsSort options={SORT_OPTIONS} />
@@ -43,7 +45,7 @@ export default function BlogPage() {
           {POSTS.map((post, index) => (
             <BlogPostCard key={post.id} post={post} index={index} />
           ))}
-        </Grid>
+        </Grid> */}
       </Container>
     </>
   );

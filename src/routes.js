@@ -9,6 +9,10 @@ import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
+import NewUser from './pages/NewUser';
+import NewEvents from './pages/newEvent';
+
+
 
 // ----------------------------------------------------------------------
 
@@ -28,6 +32,23 @@ export default function Router() {
     {
       path: 'login',
       element: <LoginPage />,
+    },
+    // {
+    //   path:'/dashboard/user',
+    //   element:<DashboardLayout/>,
+    //   children:[
+    //     {element:<Navigate to="/dashboard/user"/>,index:true},
+    //     {path:'user',element:<UserPage/>}
+    //   ],
+
+    // },
+    {
+      path:'/newUser',
+      element:<NewUser/>,
+    },
+    {
+      path:'/newEvent',
+      element:<NewEvents/>,
     },
     {
       element: <SimpleLayout />,

@@ -17,25 +17,25 @@ const navConfig = [
     icon: icon('ic_user'),
   },
   {
-    title: 'product',
+    title: 'Events',
     path: '/dashboard/products',
-    icon: icon('ic_cart'),
+    icon: icon('ic_blog'),
   },
   {
-    title: 'blog',
+    title: 'Masjid',
     path: '/dashboard/blog',
-    icon: icon('ic_blog'),
+    icon: icon('masjid'),
   },
   {
     title: 'login',
     path: '/login',
     icon: icon('ic_lock'),
   },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: icon('ic_disabled'),
-  },
+  // {
+  //   title: 'Not found',
+  //   path: '/404',
+  //   icon: icon('ic_disabled'),
+  // },
 ];
 
 export default navConfig;

@@ -1,7 +1,9 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
+import { Route,Routes,useNavigate } from 'react-router-dom';
+
 // @mui
 import {
   Card,
@@ -22,6 +24,9 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
+//
+import { getAllUser } from '../services/userAdd';
+
 // components
 import Label from '../components/label';
 import Iconify from '../components/iconify';
@@ -31,14 +36,19 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
 
+import fireDb from '../firebase';
+
+
+
+
+
+
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'email', label: 'Company', alignRight: false },
+  { id: 'number', label: 'Role', alignRight: false },
   { id: '' },
 ];
 
@@ -86,8 +96,31 @@ export default function UserPage() {
 
   const [filterName, setFilterName] = useState('');
 
+  const [data,setData] =useState({});
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+
+  useEffect(()=>{
+    getUser();
+  },[]);
+  const getUser= async()=> {
+    const info= await getAllUser();
+    console.log(info.docs);
+    setData(info.docs.map((doc)=>({...doc.data(),id:doc.id})))
+  }
+  // useEffect(()=>{
+  //     fireDb.child("New user").on("value",(snapshot)=>{
+  //         if(snapshot.val() !== null){
+  //             setData({...snapshot.val()});
+  //         }
+  //         else{
+  //             setData({})
+  //         }
+  //     });
+  //     return ()=>{
+  //         setData({});
+  //     };
+  // },[]);
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -96,10 +129,29 @@ export default function UserPage() {
     setOpen(null);
   };
 
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
+  };
+  const navigate=useNavigate();
+  
+  const navigateToNewUser=()=>{
+    const path = `/newUser`; 
+    navigate(path);
+  }
+  const handleDelete=()=>{
+
+    let newSelected=[];
+    for(let i=0;i<USERLIST.length;i+=1){
+      const obj=USERLIST[i];
+      if(selected.indexOf(obj.name) !== -1){
+        newSelected=USERLIST.splice(i,USERLIST.length)
+      }
+    }
+    setSelected(newSelected)
+    setOpen(null);
   };
 
   const handleSelectAllClick = (event) => {
@@ -148,6 +200,7 @@ export default function UserPage() {
 
   return (
     <>
+      {/* <pre>{JSON.stringify(data,undefined,2)}</pre> */}
       <Helmet>
         <title> User | Minimal UI </title>
       </Helmet>
@@ -157,7 +210,7 @@ export default function UserPage() {
           <Typography variant="h4" gutterBottom>
             User
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={navigateToNewUser} >
             New User
           </Button>
         </Stack>
@@ -172,16 +225,38 @@ export default function UserPage() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
+                  rowCount={data.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
+                  {Object.keys(data).map((id,index)=>{
+                    return(
+                        <TableRow key={id}>
+                          <TableCell padding="checkbox">
+                          <Checkbox  />
+                          </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                            <Typography variant="subtitle2" noWrap>
+                              {data[id].userName}
+                            </Typography>
+                            </Stack>
+                          </TableCell>
+
+                          <TableCell align="left">{data[id].emailAddress}</TableCell>
+
+                          <TableCell align="left">{data[id].phoneNumber}</TableCell>
+                        </TableRow>  
+                      );
+                    }) }
+                </TableBody > 
+                {/* <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                     const { id, name, role, status, company, avatarUrl, isVerified } = row;
                     const selectedUser = selected.indexOf(name) !== -1;
-
+                  
                     return (
                       <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedUser}>
                         <TableCell padding="checkbox">
@@ -220,7 +295,7 @@ export default function UserPage() {
                       <TableCell colSpan={6} />
                     </TableRow>
                   )}
-                </TableBody>
+                </TableBody> */}
 
                 {isNotFound && (
                   <TableBody>
@@ -285,8 +360,9 @@ export default function UserPage() {
         </MenuItem>
 
         <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+          <Button sx={{ mr: 2 }} onClick={()=>handleDelete(USERLIST)}>
           Delete
+          </Button>
         </MenuItem>
       </Popover>
     </>
